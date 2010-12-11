@@ -751,20 +751,6 @@ namespace BigBrotherAndy {
 		return TRUE;
 	}
 
-
-	HRESULT CABRViewer::DwmExtendFrameIntoClientArea() {
-		if ( m_oDWMAPI.IsInitialized() ) {
-			// Negative margins have special meaning to DwmExtendFrameIntoClientArea.
-			// Negative margins create the "sheet of glass" effect, where the client area
-			// is rendered as a solid surface with no window border.
-			MARGINS margins = {-1};
-
-			// Extend frame across entire window.
-			return m_oDWMAPI.DwmExtendFrameIntoClientArea ( m_hWnd, &margins );
-		}
-		return E_FAIL;
-	}
-
 	BOOL CABRViewer::UnpackingJobCallback (  ABRPARSER_JOB* pJobStatus ) {
 		if ( pJobStatus ) {
 			if ( pJobStatus->bJobFinished ) {
