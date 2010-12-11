@@ -150,14 +150,6 @@ namespace BigBrotherAndy {
 		//
 		Recolor();
 
-		// Initialize DWM API
-		m_oDWMAPI.Initialize();
-
-		// Initialize themes API
-		m_oThemes.Initialize();
-
-		// DwmExtendFrameIntoClientArea();
-
 		// Show window
 		ShowWindow ( m_hWnd, SW_SHOW );
 
@@ -254,7 +246,7 @@ namespace BigBrotherAndy {
 	}
 
 	void CABRViewer::BufferedDrawWindow ( HDC hDC, RECT* prc ) {
-		if ( m_oThemes.IsInitialized() ) {
+/*		if ( m_oThemes.IsInitialized() ) {
 			BP_PAINTPARAMS paintParams = {0};
 			paintParams.cbSize = sizeof(paintParams);
 			//paintParams.prcExclude = &m_rcClip;
@@ -263,9 +255,9 @@ namespace BigBrotherAndy {
 				DrawWindow ( hBufferDC, prc );
 				m_oThemes.EndBufferedPaint ( hPaintBuffer , TRUE );
 			};
-		} else {
+		} else { */
 			DrawWindow ( CBufferDC ( m_hWnd, hDC ), prc );
-		}
+		//}
 	}
 
 	void CABRViewer::DrawWindow ( HDC hDC, RECT* prc ) {
