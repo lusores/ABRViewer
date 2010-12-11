@@ -1,0 +1,3 @@
+EXPORTS
+	ReadAdobePhotoshopBrushFile	 @1
+	SearchForProperty			 @2
