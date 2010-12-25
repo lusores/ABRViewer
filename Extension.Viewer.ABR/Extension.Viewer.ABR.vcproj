@@ -291,6 +291,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Pointers.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Resource.h"
 				>
 			</File>
