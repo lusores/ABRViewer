@@ -27,6 +27,6 @@
 #include <tchar.h>
 
 #include <strsafe.h>
-#include "../../Engine/Engine.Common/Pointers.h"
+#include "Pointers.h"
 
 using namespace BigBrotherAndy;
