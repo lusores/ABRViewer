@@ -292,6 +292,10 @@ namespace BigBrotherAndy {
 			return 0xFF00;
 		};
 
+		virtual LRESULT OnLButtonDblClk ( UINT vkCode, int x, int y ) {
+			return 0xFF00;
+		};
+
 		virtual LRESULT OnDropFiles ( HDROP hDrop ) {
 			return 0xFF00;
 		};
@@ -348,6 +352,10 @@ namespace BigBrotherAndy {
 
 			case WM_NCDESTROY:
 				lResult = pWindow->OnNcDestroy(wParam,lParam);
+				break;
+
+			case WM_LBUTTONDBLCLK:
+				lResult = pWindow->OnLButtonDblClk ( wParam, ((int)(short)LOWORD(lParam)), ((int)(short)HIWORD(lParam)) );
 				break;
 
 			case WM_NCHITTEST:

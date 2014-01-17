@@ -66,7 +66,8 @@ namespace BigBrotherAndy {
 		LRESULT OnPaint();
 		LRESULT OnDropFiles ( HDROP hDrop );
 		LRESULT OnDrop ( STGMEDIUM* pstgmed, FORMATETC* pFormatEtc );
-
+		LRESULT OnLButtonDblClk ( UINT vkCode, int x, int y );
+	
 		void	BufferedDrawWindow ( HDC hDC, RECT* prc );
 		void	DrawWindow ( HDC hDC, RECT* prc );
 
@@ -109,6 +110,8 @@ namespace BigBrotherAndy {
 	public:
 		ShowTimeState	m_uItsShowTimeBaby;
 		CDropTarget*	m_pDropTarget;
+		CAutoPtr<WCHAR>	m_wPhotoshopExecutable;
+		CAutoPtr<WCHAR>	m_wBrushesFile;
 	};
 };
 
