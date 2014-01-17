@@ -1,24 +1,24 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Extension.Parser.ABR", "Extension.Parser.ABR.vcproj", "{43E70B96-81FF-40F4-B2A3-9C2CFAAB318F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Extension.Viewer.ABR", "..\Extension.Viewer.ABR\Extension.Viewer.ABR.vcproj", "{DED1D740-51C5-4D2A-B209-B0372DA5C704}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Extension.Viewer.ABR", "..\Extension.Viewer.ABR\Extension.Viewer.ABR.vcxproj", "{DED1D740-51C5-4D2A-B209-B0372DA5C704}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Outer.libctiny", "..\Outer.Tlibc\Outer.Tlibc.vcproj", "{4E15033F-45F2-4765-926E-E86660EF6C85}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Outer.libctiny", "..\Outer.Tlibc\Outer.Tlibc.vcxproj", "{4E15033F-45F2-4765-926E-E86660EF6C85}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/TFS14
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs14
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = Extension.Parser.ABR.vcproj
 		SccLocalPath1 = .
-		SccProjectUniqueName2 = ..\\Extension.Viewer.ABR\\Extension.Viewer.ABR.vcproj
+		SccProjectUniqueName2 = ..\\Extension.Viewer.ABR\\Extension.Viewer.ABR.vcxproj
 		SccProjectName2 = ../Extension.Viewer.ABR
 		SccLocalPath2 = ..\\Extension.Viewer.ABR
-		SccProjectUniqueName3 = ..\\Outer.Tlibc\\Outer.Tlibc.vcproj
+		SccProjectUniqueName3 = ..\\Outer.Tlibc\\Outer.Tlibc.vcxproj
 		SccProjectName3 = ../Outer.Tlibc
 		SccLocalPath3 = ..\\Outer.Tlibc
 	EndGlobalSection

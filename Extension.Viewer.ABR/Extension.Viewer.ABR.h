@@ -80,10 +80,6 @@ namespace BigBrotherAndy {
 		static BOOL UnpackingJobCallback (  ABRPARSER_JOB* pJobStatus );
 
 	private:
-		CDwmApiImpl			m_oDWMAPI;
-		CUxThemeAeroImpl	m_oThemes;
-	
-
 		BOOL			m_fBrushDrag;
 		HCURSOR			m_hArrowCursor, m_hDragCursor;
 		POINT			m_ptDragPoint, m_ptOffset;
