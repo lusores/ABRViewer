@@ -29,8 +29,9 @@
 #include "DragDrop.h"
 #include "Extension.Viewer.ABR.h"
 
-
 namespace BigBrotherAndy {
+
+	#define DEF_HELP L"navigate between brushes\tleft, right arrows, mouse wheel\r\nzoom in/out\t\t\tup, down arrows, mouse wheel with ctrl\r\ninverse color\t\t\tspace\r\nsend to photoshop\t\tenter (return)\r\nclose window\t\t\tright mouse click, escape"
 
 	CABRViewer::CABRViewer() : Window<CABRViewer>(0,0) {
 		m_uItsShowTimeBaby = ShowBrokenHeart;
@@ -246,18 +247,7 @@ namespace BigBrotherAndy {
 	}
 
 	void CABRViewer::BufferedDrawWindow ( HDC hDC, RECT* prc ) {
-/*		if ( m_oThemes.IsInitialized() ) {
-			BP_PAINTPARAMS paintParams = {0};
-			paintParams.cbSize = sizeof(paintParams);
-			//paintParams.prcExclude = &m_rcClip;
-			HDC	hBufferDC;
-			if ( HPAINTBUFFER hPaintBuffer = m_oThemes.BeginBufferedPaint ( hDC, prc, BPBF_COMPATIBLEBITMAP, &paintParams, &hBufferDC ) ) {
-				DrawWindow ( hBufferDC, prc );
-				m_oThemes.EndBufferedPaint ( hPaintBuffer , TRUE );
-			};
-		} else { */
-			DrawWindow ( CBufferDC ( m_hWnd, hDC ), prc );
-		//}
+		DrawWindow ( CBufferDC ( m_hWnd, hDC ), prc );
 	}
 
 	void CABRViewer::DrawWindow ( HDC hDC, RECT* prc ) {
@@ -276,10 +266,12 @@ namespace BigBrotherAndy {
 				DrawText ( hDC, L"J", -1, prc, DT_CENTER | DT_VCENTER | DT_SINGLELINE  );
 
 				SetTextColor ( hDC, m_clrQuaterColor );
-				SelectObject ( hDC, m_hSmallFont );
-
+				hOldFont = (HFONT)SelectObject ( hDC, m_hSmallFont );
 				DrawText ( hDC, L"Drop point ;)", -1, prc, DT_CENTER | DT_VCENTER | DT_SINGLELINE  );
-
+				SelectObject ( hDC, m_hDetailsFont );
+				prc->left += 10;
+				prc->top += 10;
+				DrawText ( hDC, DEF_HELP, -1, prc, DT_WORDBREAK | DT_EXPANDTABS );
 				SelectObject ( hDC, hOldFont );
 			};
 			break;
@@ -296,10 +288,14 @@ namespace BigBrotherAndy {
 				DrawText ( hDC, wsProgress, -1, prc, DT_CENTER | DT_VCENTER | DT_SINGLELINE  );
 
 				SetTextColor ( hDC, m_clrQuaterColor );
-				SelectObject ( hDC, m_hSmallFont );
+				hOldFont = (HFONT)SelectObject ( hDC, m_hSmallFont );
 
 				DrawText ( hDC, L"One moment please...", -1, prc, DT_CENTER | DT_VCENTER | DT_SINGLELINE  );
 
+				SelectObject ( hDC, m_hDetailsFont );
+				prc->left += 10;
+				prc->top += 10;
+				DrawText ( hDC, DEF_HELP, -1, prc, DT_WORDBREAK | DT_EXPANDTABS );
 				SelectObject ( hDC, hOldFont );
 			};
 			break;
@@ -536,6 +532,44 @@ namespace BigBrotherAndy {
 		return OnDestroy();
 	}
 
+	LRESULT CABRViewer::OnLButtonDblClk ( UINT vkCode, int x, int y ) {
+		if ( m_bIsDecodingIsActive || !m_wBrushesFile ) {
+			return 0;
+		};
+
+		// Lookup for photoshop executable
+		if ( !m_wPhotoshopExecutable.get() ) {
+			DWORD dwBuffer;
+			IEnumAssocHandlers* pEnumAssocHandlers = 0;
+			if ( SUCCEEDED ( SHAssocEnumHandlers ( L".abr", ASSOC_FILTER_RECOMMENDED, &pEnumAssocHandlers ) ) && pEnumAssocHandlers ) {
+				ULONG ulFetched = 0;
+				IAssocHandler* pAssocHandler = 0;
+				while ( SUCCEEDED ( pEnumAssocHandlers->Next(1, &pAssocHandler, &ulFetched ) ) && pAssocHandler ) {
+					LPWSTR lpwExecutableName = 0;
+					if ( SUCCEEDED ( pAssocHandler->GetName(&lpwExecutableName) ) && lpwExecutableName ) {
+						if ( wcsstr ( lpwExecutableName, L"otoshop.exe" ) ) {
+							size_t dwLenght;
+							StringCchLength ( lpwExecutableName, MAX_PATH, &dwLenght );
+							m_wPhotoshopExecutable.reset ( new WCHAR[dwLenght+1] );
+							StringCchCopy ( m_wPhotoshopExecutable, dwLenght + 1, lpwExecutableName );
+							pAssocHandler->Release();
+							break;
+						};
+					};
+					pAssocHandler->Release();
+				};
+				pEnumAssocHandlers->Release();
+			};
+		};
+
+		if ( m_wPhotoshopExecutable.get() ) {
+			ShellExecute ( m_hWnd, 0, m_wPhotoshopExecutable, m_wBrushesFile, 0, SW_SHOW );
+		};
+
+		return 0;
+	};
+
+
 	LRESULT	CABRViewer::OnNcHitTest(WPARAM wParam, LPARAM lParam) {
 		if ( ( GetKeyState (VK_CONTROL) & 0x8000 ) || ( GetKeyState ( GetSystemMetrics(SM_SWAPBUTTON) ? VK_LBUTTON : VK_RBUTTON ) & 0x8000 ) ) {
 			return HTCLIENT;
@@ -674,6 +708,12 @@ namespace BigBrotherAndy {
 			Zoom ( TRUE, 0, 0 );
 			bUpdate = TRUE;
 			break;
+		case VK_ESCAPE:
+			OnRButtonUp(0,0,0);
+			break;
+		case VK_RETURN:
+			OnLButtonDblClk (0,0,0);
+			break;
 		};
 
 		if ( bUpdate ) {
@@ -746,6 +786,11 @@ namespace BigBrotherAndy {
 		Recolor();
 
 		m_bIsDecodingIsActive	= TRUE;
+
+		size_t dwLenght;
+		StringCchLength ( wcsFileName, MAX_PATH, &dwLenght );
+		m_wBrushesFile.reset ( new WCHAR[dwLenght+1] );
+		StringCchCopy ( m_wBrushesFile, dwLenght+1, wcsFileName );
 
 		ReadAdobePhotoshopBrushFile ( wcsFileName, AdobeBrushDataTypeFile, AdobeBrushDataTypeDIB, UnpackingJobCallback, this );
 		return TRUE;
