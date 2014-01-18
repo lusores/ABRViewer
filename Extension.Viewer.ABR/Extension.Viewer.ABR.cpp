@@ -27,11 +27,12 @@
 #include "Helpers.h"
 #include "Resource.h"
 #include "DragDrop.h"
+#include "WalkingDead.h"
 #include "Extension.Viewer.ABR.h"
 
 namespace BigBrotherAndy {
 
-	#define DEF_HELP L"navigate between brushes\tleft, right arrows, mouse wheel\r\nzoom in/out\t\t\tup, down arrows, mouse wheel with ctrl\r\ninverse color\t\t\tspace\r\nsend to photoshop\t\tenter (return)\r\nclose window\t\t\tright mouse click, escape"
+	#define DEF_HELP L"navigate between brushes\tleft, right arrows, mouse wheel\r\nzoom in/out\t\t\tup, down arrows, mouse wheel with ctrl\r\ninverse color\t\t\tspace\r\nsend to photoshop\t\tenter (return)\r\nclose window\t\t\tright mouse click, escape\r\nnext file:\t\t\tpgdn \r\nprev file:\t\t\tpgup"
 
 	CABRViewer::CABRViewer() : Window<CABRViewer>(0,0) {
 		m_uItsShowTimeBaby = ShowBrokenHeart;
@@ -45,7 +46,7 @@ namespace BigBrotherAndy {
 		
 		m_fZoomFactor = 1.0;
 
-		m_clrBackground = 0xFFFFFF;
+		m_clrBackground = 0x000000;
 		m_clrHalfColor = 0x0F0F0F;
 		m_clrQuaterColor = 0x9F9F9F;
 
@@ -218,32 +219,37 @@ namespace BigBrotherAndy {
 			return 0;
 		};
 
-		if ( m_uItsShowTimeBaby != ShowLoadingBrushes ) {
-			WCHAR wsFileName[MAX_PATH];
-			if ( DragQueryFile ( hDrop, 0, wsFileName, MAX_PATH ) ) {
-				m_uItsShowTimeBaby = ShowLoadingBrushes;
-				m_dwMagicNumber = 0;
-				
-				if ( HDC hDC = GetDC ( m_hWnd ) ) {
-					RECT rc;
-					GetClientRect ( m_hWnd, &rc );
-					BufferedDrawWindow ( CBufferDC ( m_hWnd, hDC ), &rc );
-					ReleaseDC ( m_hWnd, hDC );
-				};
-
-				if ( m_pBrushes ) {
-					m_pBrushes->Release();
-					m_pBrushes = 0;
-				};
-
-				BeginUnpackAdobeBrushesPresetFile ( wsFileName );
-				SetWindowText ( m_hWnd, wsFileName );
-			};
+		WCHAR wsFileName[MAX_PATH];
+		if ( DragQueryFile ( hDrop, 0, wsFileName, MAX_PATH ) ) {
+			YetAnotherBeginUnpack ( wsFileName );
+			m_WalkingDead.reset();
 		};
 
 		DragFinish(hDrop);
 
 		return 0;
+	}
+
+	void CABRViewer::YetAnotherBeginUnpack ( WCHAR* wcsFileName ) {
+		if ( m_uItsShowTimeBaby != ShowLoadingBrushes ) {
+			m_uItsShowTimeBaby = ShowLoadingBrushes;
+			m_dwMagicNumber = 0;
+
+			if ( HDC hDC = GetDC ( m_hWnd ) ) {
+				RECT rc;
+				GetClientRect ( m_hWnd, &rc );
+				BufferedDrawWindow ( CBufferDC ( m_hWnd, hDC ), &rc );
+				ReleaseDC ( m_hWnd, hDC );
+			};
+
+			if ( m_pBrushes ) {
+				m_pBrushes->Release();
+				m_pBrushes = 0;
+			};
+
+			BeginUnpackAdobeBrushesPresetFile ( wcsFileName );
+			SetWindowText ( m_hWnd, wcsFileName );
+		};
 	}
 
 	void CABRViewer::BufferedDrawWindow ( HDC hDC, RECT* prc ) {
@@ -539,7 +545,6 @@ namespace BigBrotherAndy {
 
 		// Lookup for photoshop executable
 		if ( !m_wPhotoshopExecutable.get() ) {
-			DWORD dwBuffer;
 			IEnumAssocHandlers* pEnumAssocHandlers = 0;
 			if ( SUCCEEDED ( SHAssocEnumHandlers ( L".abr", ASSOC_FILTER_RECOMMENDED, &pEnumAssocHandlers ) ) && pEnumAssocHandlers ) {
 				ULONG ulFetched = 0;
@@ -714,6 +719,36 @@ namespace BigBrotherAndy {
 		case VK_RETURN:
 			OnLButtonDblClk (0,0,0);
 			break;
+		case VK_NEXT:
+			if ( !m_WalkingDead ) {
+				m_WalkingDead.reset ( new _WalkingDead() );
+				m_WalkingDead->Enum ( m_wBrushesFile );
+			};
+
+			if ( m_WalkingDead->IsValid() ) {
+				if ( WCHAR* wcsNewFile = m_WalkingDead->Next() ) {
+					if ( m_uItsShowTimeBaby != ShowLoadingBrushes ) {
+						YetAnotherBeginUnpack(wcsNewFile);
+					};
+				};
+			}
+
+			break;
+		case VK_PRIOR:
+			if ( !m_WalkingDead ) {
+				m_WalkingDead.reset ( new _WalkingDead() );
+				m_WalkingDead->Enum ( m_wBrushesFile );
+			};
+
+			if ( m_WalkingDead->IsValid() ) {
+				if ( WCHAR* wcsNewFile = m_WalkingDead->Prev() ) {
+					if ( m_uItsShowTimeBaby != ShowLoadingBrushes ) {
+						YetAnotherBeginUnpack(wcsNewFile);
+					};
+				};
+			};
+
+			break;
 		};
 
 		if ( bUpdate ) {
@@ -752,8 +787,8 @@ namespace BigBrotherAndy {
 		};
 
 		//
-		m_clrBackground = 0x000000;
-		Recolor();
+		// m_clrBackground = 0x000000;
+		// Recolor();
 
 		m_pBrushes = pBrushes;
 		m_dwMagicNumber = dwTotalBrushes;
@@ -782,8 +817,8 @@ namespace BigBrotherAndy {
 
 	BOOL CABRViewer::BeginUnpackAdobeBrushesPresetFile(WCHAR* wcsFileName) {
 		// 
-		m_clrBackground = 0xFFFFFF;
-		Recolor();
+		// m_clrBackground = 0xFFFFFF;
+		// Recolor();
 
 		m_bIsDecodingIsActive	= TRUE;
 

@@ -98,11 +98,11 @@ namespace BigBrotherAndy {
 		}
 
 		// Pointer access methods
-		void reset(T* pObject = NULL) throw () {
+		T* reset(T* pObject = NULL) throw () {
 			if (m_pObject) {
 				delete m_pObject;
 			};
-			m_pObject = pObject;
+			return m_pObject = pObject;
 		}
 
 		// Assignment operators
