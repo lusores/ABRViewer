@@ -121,6 +121,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Big Brother %40ndy\Sources\FrontEnd\Extension.Viewer.ABR\WalkingDead.cpp" />
     <ClCompile Include="AdobeBrush.cpp" />
     <ClCompile Include="AdobeBrushesPresetParser.cpp" />
     <ClCompile Include="DragDrop.cpp" />
@@ -135,6 +136,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Big Brother %40ndy\Sources\FrontEnd\Extension.Viewer.ABR\WalkingDead.h" />
     <ClInclude Include="AdobeBrush.h" />
     <ClInclude Include="AdobeBrushesPresetParser.h" />
     <ClInclude Include="DragDrop.h" />

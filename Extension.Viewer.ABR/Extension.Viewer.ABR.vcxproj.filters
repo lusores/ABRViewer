@@ -42,6 +42,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Big Brother %40ndy\Sources\FrontEnd\Extension.Viewer.ABR\WalkingDead.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AdobeBrush.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Big Brother %40ndy\Sources\FrontEnd\Extension.Viewer.ABR\WalkingDead.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

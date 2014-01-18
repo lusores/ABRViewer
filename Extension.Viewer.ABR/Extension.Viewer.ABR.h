@@ -50,6 +50,7 @@ namespace BigBrotherAndy {
 	public:
 		BOOL Create(HINSTANCE hInstance);
 		BOOL BeginUnpackAdobeBrushesPresetFile(WCHAR* wcsFileName);
+		void YetAnotherBeginUnpack ( WCHAR* wcsFileName );
 
 
 		LRESULT OnABRJobInProgress ( DWORD dwTotalBrushes, DWORD dwCurrentBrush );
@@ -108,10 +109,11 @@ namespace BigBrotherAndy {
 		BOOL			m_bTerminateApplication;
 
 	public:
-		ShowTimeState	m_uItsShowTimeBaby;
-		CDropTarget*	m_pDropTarget;
-		CAutoPtr<WCHAR>	m_wPhotoshopExecutable;
-		CAutoPtr<WCHAR>	m_wBrushesFile;
+		ShowTimeState			m_uItsShowTimeBaby;
+		CDropTarget*			m_pDropTarget;
+		CAutoPtr<WCHAR>			m_wPhotoshopExecutable;
+		CAutoPtr<WCHAR>			m_wBrushesFile;
+		CAutoPtr<_WalkingDead>	m_WalkingDead;
 	};
 };
 

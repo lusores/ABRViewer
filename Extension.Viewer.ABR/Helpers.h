@@ -126,61 +126,6 @@ namespace BigBrotherAndy {
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	// class CFilesEnumerator
-	//
-	class CFilesEnumerator {
-	public:
-		class CItem {
-		public:
-			CItem ( WCHAR* lpwszFileName, unsigned long ulFileAttributes ) {
-				m_lpwszFileName		= lpwszFileName;
-				m_ulFileAttributes	= ulFileAttributes;
-			};
-
-			operator WCHAR* () {
-				return m_lpwszFileName;
-			};
-
-			operator ULONG () {
-				return m_ulFileAttributes;
-			};
-
-		private:
-			WCHAR* m_lpwszFileName;
-			unsigned long	m_ulFileAttributes;
-		};
-
-	public:
-		CFilesEnumerator ( ) : m_hFind (INVALID_HANDLE_VALUE) {
-		};
-
-		~CFilesEnumerator () {
-			if ( m_hFind != INVALID_HANDLE_VALUE ) {
-				FindClose(m_hFind);
-			};
-		};
-
-		CItem* Find (WCHAR* lpszRoot, WCHAR* lpwszMask  = L"*" ) {
-			WCHAR wszCurrentDir[MAX_PATH];
-			if ( SUCCEEDED ( StringCchPrintf ( wszCurrentDir, MAX_PATH, L"%s\\%s", lpszRoot, lpwszMask ) ) ) {
-				m_hFind = FindFirstFileW((WCHAR*)(&wszCurrentDir), &m_hFindFileData);
-				return m_hFind == INVALID_HANDLE_VALUE ? 0 : new CItem ( (WCHAR*)&m_hFindFileData.cFileName, m_hFindFileData.dwFileAttributes );
-			} else {
-				return 0;
-			};
-		}
-
-		CItem* Next () {
-			return m_hFind == INVALID_HANDLE_VALUE ? 0 : ( FindNextFileW(m_hFind, &m_hFindFileData) ? new CItem ( (WCHAR*)&m_hFindFileData.cFileName, m_hFindFileData.dwFileAttributes ) : 0 );
-		}; 
-
-	private:
-		WIN32_FIND_DATAW	m_hFindFileData;
-		HANDLE				m_hFind;
-	};
-
-
-	//////////////////////////////////////////////////////////////////////////
 	// Simple window messaging API encapsulation
 	//
 	template<class T> class Window {
